@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import pymongo
 
-
 app = Flask(__name__)
 app.config["DEBUG"] = True
 CORS(app)
@@ -11,19 +10,6 @@ myclient = pymongo.MongoClient('mongodb://localhost:27017/')
 
 db = myclient['sth']
 collect = db['record']
-
-# SOMETHING = [
-#     {
-#         'title': 'Kai',
-#         'comment': 'A handsome boy',
-#         'check': True
-#     },
-#     {
-#         'title': 'Mi',
-#         'comment': 'A cute girl',
-#         'check': False
-#     }
-# ]
 
 @app.route('/', methods=['GET'])
 def home():
