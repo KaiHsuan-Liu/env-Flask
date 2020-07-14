@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import pymongo
+import uuid
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -20,16 +21,18 @@ def sth():
     SOMETHING = []
     if request.method == 'POST':
         post_data = request.get_json()
+        post_data['id'] = uuid.uuid4().hex
         collect.insert_one(post_data)
     else:
         cursor = collect.find()
         for x in cursor:
+            print(x)
             tmp = {}
+            tmp['id'] = x['id']
             tmp['title'] = x['title']
             tmp['comment'] = x['comment']
             tmp['check'] = x['check']
             SOMETHING.append(tmp)
-
     return jsonify({
         'status': 'success',
         'something': SOMETHING

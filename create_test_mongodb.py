@@ -1,9 +1,10 @@
 import pymongo
- 
+import uuid
+
 myclient = pymongo.MongoClient('mongodb://localhost:27017/')
- 
+
 db = myclient['sth']
- 
+
 collect = db['record']
 
 # for post in collect.find():
@@ -11,11 +12,13 @@ collect = db['record']
 
 SOMETHING = [
     {
+        'id': uuid.uuid4().hex,
         'title': 'Kai',
         'comment': 'a handsome boy',
         'check': True
     },
     {
+        'id': uuid.uuid4().hex,
         'title': 'Mi',
         'comment': 'a little girl',
         'check': False
@@ -25,6 +28,7 @@ SOMETHING = [
 
 
 # collect.insert_many(SOMETHING)
+# collect.drop()
 
 cursor = collect.find()
 for x in cursor:
