@@ -1,66 +1,10 @@
-<template>
-    <div>
-        <h1>Record Something..</h1>
-        <hr><br><br>
-        <button class="btn btn-success col-5" v-b-modal.sth-modal>Add</button>
-        <br><br>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Comment</th>
-                    <th>Check?</th>
-                    <th>Option</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(m, index) in msg" :key="index">
-                    <td>{{ m.title }}</td>
-                    <td>{{ m.comment }}</td>
-                    <td>
-                        <span v-if="m.check">YES</span>
-                        <span v-else>NO</span>
-                    </td>
-                    <td>
-                        <button class="btn btn-warning ">Update</button>
-                        <button class="btn btn-danger ">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-            
-        </table>
-        {{msg}}
-        <br>
-        {{addSthForm}}
-
-        <b-modal ref="addSthModal" id="sth-modal" title="Add one Something...." hide-footer>
-            <!-- Two present way in submit/reset -->
-            <b-form @reset="onReset" class="w-100">
-                <b-form-group label="Title:">
-                    <b-form-input type="text" v-model="addSthForm.title" placeholder="Enter title.." required>
-                    </b-form-input>
-                </b-form-group>
-
-                <b-form-group label="Comment:">
-                    <b-form-input type="text" v-model="addSthForm.comment" placeholder="Enter comment.." required>
-                    </b-form-input>
-                </b-form-group>
-
-                <b-form-group>
-                    <b-form-checkbox v-model="addSthForm.check" value="true">Check?</b-form-checkbox>
-                </b-form-group>
-
-                <b-button @click="onSubmit" variant="primary">Submit</b-button>
-                <b-button type="reset" variant="danger">Reset</b-button>
-            </b-form>
-        </b-modal>
-    </div>
-</template>
-
 <script>
 import axios from 'axios'
-
+import Alert from '../components/Alert.vue'
 export default {
+    components: {
+        alert: Alert
+    },
     data () {
         return {
             msg: [],
@@ -69,6 +13,8 @@ export default {
                 comment: '',
                 check: [],
             },
+            message: '',
+            showMessage: false
         }
     },
     methods:{
@@ -106,11 +52,13 @@ export default {
             const url = 'http://localhost:5000/Sth'
             axios.post(url, data)
             .then(() => {
-                this.getSomething()
+                this.getSomething();
+                this.message = 'Something added!';
+                this.showMessage = true;
             })
             .catch((error) => {
-                console.log(error)
-                this.getSomething()
+                console.log(error);
+                this.getSomething();
             })
         },
         initForm() {
@@ -126,6 +74,66 @@ export default {
 
 }
 </script>
+
+<template>
+    <div>
+        <h1>Record Something..</h1>
+        <hr><br><br>
+        <alert :message="message" v-if="showMessage"></alert>
+        <button class="btn btn-success col-5" v-b-modal.sth-modal>Add</button>
+        <br><br>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Comment</th>
+                    <th>Check?</th>
+                    <th>Option</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(m, index) in msg" :key="index">
+                    <td>{{ m.title }}</td>
+                    <td>{{ m.comment }}</td>
+                    <td>
+                        <span v-if="m.commentheck">YES</span>
+                        <span v-else>NO</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-warning ">Update</button>
+                        <button class="btn btn-danger ">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+            
+        </table>
+        {{msg}}
+        <br>
+        {{addSthForm}}
+
+        <b-modal ref="addSthModal" id="sth-modal" title="Add one Something...." hide-footer>
+            <!-- Two present way in submit/reset -->
+            <b-form @reset="onReset" class="w-100">
+                <b-form-group label="Title:">
+                    <b-form-input type="text" v-model="addSthForm.title" placeholder="Enter title.." required>
+                    </b-form-input>
+                </b-form-group>
+
+                <b-form-group label="Comment:">
+                    <b-form-input type="text" v-model="addSthForm.comment" placeholder="Enter comment.." required>
+                    </b-form-input>
+                </b-form-group>
+
+                <b-form-group>
+                    <b-form-checkbox v-model="addSthForm.check" value="true">Check?</b-form-checkbox>
+                </b-form-group>
+
+                <b-button @click="onSubmit" variant="primary">Submit</b-button>
+                <b-button type="reset" variant="danger">Reset</b-button>
+            </b-form>
+        </b-modal>
+    </div>
+</template>
 
 <style>
 
