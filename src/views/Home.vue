@@ -14,7 +14,13 @@ export default {
                 check: [],
             },
             message: '',
-            showMessage: false
+            showMessage: false,
+            editForm: {
+                id: '',
+                title: '',
+                comment: '',
+                check: [],
+            },
         }
     },
     methods:{
@@ -66,7 +72,62 @@ export default {
             this.addSthForm.title = '';
             this.addSthForm.comment = '';
             this.addSthForm.check = [];
-        }
+
+            this.editForm.id = '';
+            this.editForm.title = '';
+            this.editForm.comment = '';
+            this.editForm.check = [];
+        },
+        editBook(seleted) {
+            this.editForm = seleted;
+            console.log(this.editForm)
+        },
+        onSubmitUpdate() {
+            console.log('onSubmitUpdate');
+            this.$refs.editSthModal.hide();
+            let check = false;
+            if (this.editForm.check[0]) {check = true;}
+            const data = {
+                'title' : this.editForm.title,
+                'comment' : this.editForm.comment,
+                'check' : check
+            }
+            this.updateSth(data, this.editForm.id)
+        },
+        updateSth(data, sthID) {
+            const url = `http://localhost:5000/Sth/${sthID}`;
+            axios.put(url, data)
+            .then(() => {
+                this.getSomething();
+                this.message = 'Something updated!';
+                this.showMessage = true;
+            })
+            .catch((error) => {
+                console.log(error);
+                this.getSomething();
+            })
+        },
+        onResetUpdate() {
+            this.$refs.editSthModal.hide();
+            this.initForm();
+            this.getSomething();
+        },
+        removeBook(sthID) {
+            const url = `http://localhost:5000/Sth/${sthID}`;
+            axios.delete(url)
+            .then(() => {
+                this.getSomething();
+                this.message = 'Something removed!';
+                this.showMessage = true;
+            })
+            .catch((error) => {
+                console.log(error);
+                this.getSomething();
+            })
+        },
+        onDeleteBook(seleted) {
+            this.removeBook(seleted.id);
+        },
     },
     created() {
         this.getSomething();
@@ -80,7 +141,7 @@ export default {
         <h1>Record Something..</h1>
         <hr><br><br>
         <alert :message="message" v-if="showMessage"></alert>
-        <button class="btn btn-success col-5" v-b-modal.sth-modal>Add</button>
+        <button class="btn btn-success col-5" v-b-modal.sth-add-modal>Add</button>
         <br><br>
         <table class="table">
             <thead>
@@ -100,8 +161,8 @@ export default {
                         <span v-else>NO</span>
                     </td>
                     <td>
-                        <button class="btn btn-warning ">Update</button>
-                        <button class="btn btn-danger ">Delete</button>
+                        <button class="btn btn-warning" v-b-modal.sth-update-modal @click="editBook(m)">Update</button>
+                        <button class="btn btn-danger " @click="onDeleteBook(m)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -109,9 +170,15 @@ export default {
         </table>
         {{msg}}
         <br>
-        {{addSthForm}}
+        <tr>
+            {{addSthForm}}
+        </tr>
+        <tr>
+            {{editForm}}
+        </tr>
+        <!-- Add modal -->
+        <b-modal ref="addSthModal" id="sth-add-modal" title="Add Something...." hide-footer>
 
-        <b-modal ref="addSthModal" id="sth-modal" title="Add one Something...." hide-footer>
             <!-- Two present way in submit/reset -->
             <b-form @reset="onReset" class="w-100">
                 <b-form-group label="Title:">
@@ -130,6 +197,28 @@ export default {
 
                 <b-button @click="onSubmit" variant="primary">Submit</b-button>
                 <b-button type="reset" variant="danger">Reset</b-button>
+            </b-form>
+        </b-modal>
+
+        <!-- Edit modal -->
+        <b-modal ref="editSthModal" id="sth-update-modal" title="Update Something...." hide-footer>
+            <b-form>
+                <b-form-group label="Title:">
+                    <b-form-input type="text" v-model="editForm.title" placeholder="Enter title.." required>
+                    </b-form-input>
+                </b-form-group>
+
+                <b-form-group label="Comment:">
+                    <b-form-input type="text" v-model="editForm.comment" placeholder="Enter comment.." required>
+                    </b-form-input>
+                </b-form-group>
+
+                <b-form-group>
+                    <b-form-checkbox v-model="editForm.check" value="true">Check?</b-form-checkbox>
+                </b-form-group>
+
+                <b-button @click="onSubmitUpdate" variant="primary">Update</b-button>
+                <b-button @click="onResetUpdate" variant="danger">Cancel</b-button>
             </b-form>
         </b-modal>
     </div>
