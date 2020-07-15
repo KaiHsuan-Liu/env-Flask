@@ -25,8 +25,10 @@ SOMETHING = [
     }
 ]
 
+myquery = { "title": "Kai" }
+newvalues = { "$set": { "title": "KAKA" } }
 
-
+#collect.update_one(myquery, newvalues)
 # collect.insert_many(SOMETHING)
 # collect.drop()
 

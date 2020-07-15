@@ -12,6 +12,16 @@ myclient = pymongo.MongoClient('mongodb://localhost:27017/')
 db = myclient['sth']
 collect = db['record']
 
+def remove_sth(sth_id):
+    print(sth_id)
+    myquery = { "id": sth_id }
+    mydoc = collect.find_one(myquery)
+    if mydoc == None:
+        return False
+    else:
+        collect.delete_one(myquery)
+        return True
+
 @app.route('/', methods=['GET'])
 def home():
     return "<h1>Hello Flask!</h1>"
@@ -37,6 +47,20 @@ def sth():
         'status': 'success',
         'something': SOMETHING
     })
+
+@app.route('/Sth/<sth_id>', methods=['PUT', 'DELETE'])
+def single_Sth(sth_id):
+    if request.method == 'PUT':
+        post_data = request.get_json()
+        print(post_data)
+        myquery = { "id": sth_id }
+        newvalues = { "$set": post_data }
+        collect.update_one(myquery, newvalues)
+
+    if request.method == 'DELETE':
+        remove_sth(sth_id)
+
+    return jsonify({'status': 'success'})
 
 if __name__ == '__main__':
     app.run()

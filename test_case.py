@@ -10,16 +10,17 @@ class ToDoList(unittest.TestCase):
         
     def tearDown(self):
         self.client = None
-        
-    def test_home(self):
-        res = self.client.get("/")
-        print(res.data)
-        # assert b'<h1>Hello Flask!</h1>' in res.data
-        self.assertEqual(res.data, b'<h1>Hello Flask!</h1>')
 
-    def test_api_sth(self):
-        res = self.client.get("/Sth")
-        print(res.data)
+    # def test_home(self):
+    #     res = self.client.get("/")
+    #     print(res.data)
+    #     # assert b'<h1>Hello Flask!</h1>' in res.data
+    #     self.assertEqual(res.data, b'<h1>Hello Flask!</h1>')
+
+    def test_api_remove(self):
+        res = app.remove_sth("Kai")
+        print(res)
+        self.assertEqual(res, True)
 
 if __name__ == '__main__':
     unittest.main()
