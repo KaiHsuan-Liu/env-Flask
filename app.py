@@ -13,7 +13,6 @@ db = myclient['sth']
 collect = db['record']
 
 def remove_sth(sth_id):
-    print(sth_id)
     myquery = { "id": sth_id }
     mydoc = collect.find_one(myquery)
     if mydoc == None:
